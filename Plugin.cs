@@ -1,52 +1,30 @@
-﻿using System;
-using System.Linq;
-using BepInEx;
-using Photon.Pun;
-using Photon.Realtime;
+﻿using BepInEx;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Utilla;
-using Utilla.Attributes;
 
 namespace TimeChangerGUI.Source
 {
-    [ModdedGamemode]
-    [BepInDependency("org.legoandmars.gorillatag.utilla", "1.5.0")]
     [BepInPlugin(PluginInfo.GUID, PluginInfo.Name, PluginInfo.Version)]
     public class Plugin : BaseUnityPlugin
-    {
+    { // You had stuff up here you didn't need. - ciperuoy
+        public bool uiopen = true; // the gui didnt even open anyway, so i set it to true - ciperuoy
 
-        private bool keyp;
-        private bool uiopen;
-
-        void Start()
+        public void Update()
         {
-            Events.GameInitialized += OnGameInitialized;
+            if (Keyboard.current.rightShiftKey.wasPressedThisFrame)
+            {
+                uiopen = !uiopen;
+            }
         }
-
-        void OnEnable()
+        public void OnGUI()
         {
-            HarmonyPatches.ApplyHarmonyPatches();
-        }
-
-        void OnDisable()
-        {
-            HarmonyPatches.RemoveHarmonyPatches();
-        }
-
-        void OnGameInitialized(object sender, EventArgs e)
-        {
-
-        }
-        private void OnGUI()
-        {
-            if (NetworkSystem.Instance.GameModeString.Contains("MODDED"))
+            if (NetworkSystem.Instance.InRoom && NetworkSystem.Instance.GameModeString.Contains("MODDED"))
             {
                 if (uiopen)
                 {
                     GUI.Box(new Rect(30f, 50f, 100f, 160f), "TimeChanger"); // 30 50 170 160
 
-                    if (GUI.Button(new Rect(30f, 70f, 100f, 20f), "Set Daytime")) //35f 250f 100f 20f
+                    if (GUI.Button(new Rect(30f, 70f, 100f, 20f), "Set Daytime")) // 35f 250f 100f 20f
                     {
                         BetterDayNightManager.instance.SetTimeOfDay(3);
                         GameObject.Find("Environment Objects/LocalObjects_Prefab/Forest/Environment/WeatherDayNight/AudioCrickets").SetActive(false);
@@ -79,16 +57,6 @@ namespace TimeChangerGUI.Source
                         BetterDayNightManager.instance.SetTimeOfDay(0);
                     }
                 }
-            }
-
-            if (Keyboard.current.rightShiftKey.isPressed)
-            {
-                if (!keyp) uiopen = !uiopen;
-                keyp = true;
-            }
-            else
-            {
-                keyp = false;
             }
         }
     }
