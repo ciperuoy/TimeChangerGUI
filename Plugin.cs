@@ -1,4 +1,4 @@
-﻿using BepInEx;
+using BepInEx;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,9 +11,12 @@ namespace TimeChangerGUI.Source
 
         public void Update()
         {
-            if (Keyboard.current.rightShiftKey.wasPressedThisFrame)
+            if (NetworkSystem.Instance.InRoom && NetworkSystem.Instance.GameModeString.Contains("MODDED"))
             {
-                uiopen = !uiopen;
+                if (Keyboard.current.rightShiftKey.wasPressedThisFrame)
+                {
+                    uiopen = !uiopen;
+                }
             }
         }
         public void OnGUI()
@@ -61,3 +64,4 @@ namespace TimeChangerGUI.Source
         }
     }
 }
+
